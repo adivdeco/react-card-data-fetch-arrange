@@ -9,13 +9,14 @@ function Body() {
     const [txt, settxt] = useState('');
     
 
-    async function fetchdata(count,name = "") {
+    async function fetchdata(count) {
         const random = Math.floor(Math.random() * 1000);
-        const responce = await fetch(`https://api.github.com/users${name}since=${random}&per_page=${count}`);
+        const responce = await fetch(`https://api.github.com/users?since=${random}&per_page=${count}`);
         const data = await responce.json();
         console.log(data);
-        setUsers(Array.isArray(data)? data : []);
+        setUsers(data);
     }
+
     async function fetchByName(name) {
         const response = await fetch(`https://api.github.com/search/users?q=${name}`);
         const data = await response.json();
@@ -24,8 +25,21 @@ function Body() {
     }
 
     useEffect(() => {
-        fetchdata(5);
+        fetchdata(4);
     }, []);
+
+    // useEffect( ()=>{
+    //     fetchByName(txt)
+    //     fetchdata()
+    // },[txt])
+
+    useEffect(() => {
+        if (txt === '') {
+            fetchdata(4);
+        } else {
+            fetchByName(txt);
+        }
+    }, [txt]);
 
     return (
         <>
@@ -35,7 +49,7 @@ function Body() {
                    <input type="text" value={txt} placeholder='search by name..' onChange={(e)=>settxt(e.target.value)}/>
                    {/* <button onClick={()=>fetchdata( `login=${txt}`)}>search</button> */}
                    {/* <button onClick={()=> users.filter((user)=>user.login.includes(txt))}>search</button> */}
-                   <button onClick={()=>fetchByName(txt)}>search</button>
+                   {/* <button onClick={()=>fetchByName(txt)}>search</button> */}
 
         <div className="container">
             {
